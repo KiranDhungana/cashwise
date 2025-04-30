@@ -1,0 +1,6 @@
+@import "tailwindcss";
+.input-error {
+  padding: 8;
+  border-radius: 4;
+  width: 100%;
+}
