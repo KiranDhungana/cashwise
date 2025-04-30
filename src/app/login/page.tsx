@@ -3,7 +3,7 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { MantineProvider, Container, Paper, Title, Button, Space } from "@mantine/core";
+import { Container, Paper, Title, Button, Space } from "@mantine/core";
 import { Input } from "@/components/shared/Input";
 
 type LoginValues = {
