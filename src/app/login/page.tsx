@@ -16,7 +16,7 @@ const loginSchema = Yup.object({
   password: Yup.string().required("Password is required").min(6, "Must be at least 6 characters"),
 }).required();
 
-export const Login: React.FC = () => {
+const Login: React.FC = () => {
   const {
     control,
     handleSubmit,
