@@ -18,7 +18,7 @@ const signupSchema = Yup.object({
   password: Yup.string().required("Password is required").min(6, "Must be at least 6 characters"),
 }).required();
 
-export const Signup: React.FC = () => {
+const Signup: React.FC = () => {
   const {
     control,
     handleSubmit,
