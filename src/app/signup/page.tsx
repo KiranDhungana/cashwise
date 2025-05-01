@@ -1,10 +1,12 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { Container, Paper, Title, Button, Space } from "@mantine/core";
 import { Input } from "@/components/shared/Input";
+import apiClient from "@/services/apiClient";
+import { useRouter } from "next/navigation";
 
 type SignupValues = {
   name: string;
@@ -19,6 +21,7 @@ const signupSchema = Yup.object({
 }).required();
 
 const Signup: React.FC = () => {
+  const router = useRouter();
   const {
     control,
     handleSubmit,
@@ -27,9 +30,24 @@ const Signup: React.FC = () => {
     resolver: yupResolver(signupSchema),
     defaultValues: { email: "", password: "", name: "" },
   });
+  const [formError, setFormError] = useState<string | null>(null);
 
-  const onSubmit: SubmitHandler<SignupValues> = (data) => {
-    console.log("Logging in with", data);
+  const onSubmit: SubmitHandler<SignupValues> = async (data) => {
+    setFormError(null);
+
+    try {
+      const { data: res } = await apiClient.post<any>("api/auth/signup", data);
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem("authToken", res.token);
+      }
+
+      // redirect to dashboard (or wherever)
+      router.push("/login");
+    } catch (err: any) {
+      const message = err.response?.data?.message || err.message || "Signup failed";
+      setFormError(message);
+    }
   };
 
   return (
