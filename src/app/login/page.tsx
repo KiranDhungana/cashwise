@@ -34,7 +34,7 @@ const Login: React.FC = () => {
   const onSubmit: SubmitHandler<LoginValues> = async (formData) => {
     setFormError(null);
     try {
-      const { data: loginResponse } = await apiClient.post<any>("http://localhost:4000/api/auth/login", formData);
+      const { data: loginResponse } = await apiClient.post<any>("/api/auth/login", formData);
 
       if (typeof window !== "undefined") {
         localStorage.setItem("authToken", loginResponse.token);
