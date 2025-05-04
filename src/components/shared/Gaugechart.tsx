@@ -32,23 +32,19 @@ const options = {
 
 function Gaugechart() {
   return (
-    <Box style={{ position: "relative", width: 200, height: 100 }}>
+    <Box style={{ position: "relative", width: 150, height: 100 }}>
       <Doughnut data={data} options={options} />
       <Box
         style={{
           position: "absolute",
           top: "100%",
-          left: "50%",
-          transform: "translate(-50%, -40%)",
+          left: "35%",
+          transform: "translate(-50%, -50%)",
           textAlign: "center",
         }}
       >
-        <Text className="pt-[14px]" size="xl">
-          {percent}%
-        </Text>
-        <Text size="sm" color="dimmed">
-          of income spent
-        </Text>
+        <Text className="pt-[14px] text-[14px]">{percent}%</Text>
+        <Text size="sm">of income spent</Text>
       </Box>
     </Box>
   );

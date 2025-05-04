@@ -7,6 +7,7 @@ import { Container, Paper, Title, Button, Space } from "@mantine/core";
 import { Input } from "@/components/shared/Input";
 import apiClient from "@/services/apiClient";
 import { useRouter } from "next/navigation";
+import { showToast } from "@/utils/toster";
 
 type LoginValues = {
   email: string;
@@ -39,6 +40,7 @@ const Login: React.FC = () => {
       if (typeof window !== "undefined") {
         localStorage.setItem("authToken", loginResponse.token);
       }
+      showToast({ message: "Signup Success" });
       router.push("/home");
     } catch (err: any) {
       const message = err.response?.data?.message || err.message || "Failed to login";

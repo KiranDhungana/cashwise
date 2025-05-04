@@ -8,9 +8,10 @@ interface InputProps {
   label: string;
   control: any;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
+  type?: string;
 }
 
-export const Input: React.FC<InputProps> = ({ name, label, control, inputProps }) => (
+export const Input: React.FC<InputProps> = ({ name, label, control, inputProps, type }) => (
   <Controller
     control={control}
     name={name}
@@ -20,6 +21,7 @@ export const Input: React.FC<InputProps> = ({ name, label, control, inputProps }
           {label}
         </label>
         <input
+          type={type}
           id={name}
           {...inputProps}
           value={value || ""}

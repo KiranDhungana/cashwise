@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Card } from "@mantine/core";
+import { BackgroundImage, Card } from "@mantine/core";
 
 type BalanceoverviewProps = {
   icon: ReactNode;
@@ -9,7 +9,7 @@ type BalanceoverviewProps = {
   description?: string;
 };
 
-export const Balanceoverview = ({
+const Balanceoverview = ({
   icon,
   title,
   amount,
@@ -29,3 +29,4 @@ export const Balanceoverview = ({
     </Card>
   );
 };
+export default Balanceoverview;

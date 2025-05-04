@@ -1,31 +1,28 @@
-import { Balanceoverview } from "@/components/shared/Balanceoverview";
+"use client";
 import Gaugechart from "@/components/shared/Gaugechart";
 import { Badge, Card, Avatar, Indicator } from "@mantine/core";
 import { Bell, BuildingBank, CreditCard, Wallet, PigMoney } from "tabler-icons-react";
+import { Menu, Button } from "@mantine/core";
+import {
+  IconSettings,
+  IconSearch,
+  IconPhoto,
+  IconMessageCircle,
+  IconTrash,
+  IconArrowsLeftRight,
+  IconUser,
+} from "@tabler/icons-react";
+import Bottomnavigation from "@/components/layout/Bottomnavigation";
+import { useRouter } from "next/navigation";
+import Topnav from "@/components/layout/Topnav";
+import Balanceoverview from "@/components/shared/Balanceoverview";
 
-export default function Home() {
+const Home = () => {
+  const router = useRouter();
+
   return (
     <main className="min-h-screen bg-gray-50 p-6">
       {/* Top Navigation */}
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center gap-3">
-          <div className="bg-green-100 text-green-800 rounded-lg p-2">
-            <PigMoney size={24} />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">CashWise</h1>
-            <p className="text-sm text-gray-600 -mt-1">Grow Your Financial Journey</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <Indicator inline color="red" size={8}>
-            <Bell className="text-gray-600 cursor-pointer" />
-          </Indicator>
-          <Avatar src="https://i.pravatar.cc/40" radius="xl" />
-        </div>
-      </div>
-
       {/* Monthly Overview Card */}
       <Card shadow="sm" padding="lg" radius="md" className="max-w-md mx-auto bg-white mb-8 p-8">
         <div className="flex justify-between items-start">
@@ -57,7 +54,7 @@ export default function Home() {
         </div>
       </Card>
 
-      <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto mb-6">
+      <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto mb-8">
         <Balanceoverview
           icon={<BuildingBank size={20} />}
           title="Checking"
@@ -73,10 +70,14 @@ export default function Home() {
         />
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+      <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto ">
         <Balanceoverview icon={<Wallet size={20} />} title="Net Cash" amount="$1,243.67" description="•••• 4567" />
         <Balanceoverview icon={<PigMoney size={20} />} title="Saving" amount="$1,243.67" description="•••• 4567" />
       </div>
+      <div className="h-[50px]"></div>
+      <Bottomnavigation></Bottomnavigation>
     </main>
   );
-}
+};
+
+export default Home;

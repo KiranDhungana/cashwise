@@ -7,6 +7,10 @@ import { Container, Paper, Title, Button, Space } from "@mantine/core";
 import { Input } from "@/components/shared/Input";
 import apiClient from "@/services/apiClient";
 import { useRouter } from "next/navigation";
+import { showNotification } from "@mantine/notifications";
+import { title } from "process";
+import { Message } from "tabler-icons-react";
+import { showToast } from "@/utils/toster";
 
 type SignupValues = {
   name: string;
@@ -41,8 +45,7 @@ const Signup: React.FC = () => {
       if (typeof window !== "undefined") {
         localStorage.setItem("authToken", res.token);
       }
-
-      // redirect to dashboard (or wherever)
+      showToast({ message: "Signup Success" });
       router.push("/login");
     } catch (err: any) {
       const message = err.response?.data?.message || err.message || "Signup failed";
