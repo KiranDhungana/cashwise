@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { usePlaidLink, PlaidLinkOnSuccess } from "react-plaid-link";
 import apiClient from "@/services/apiClient";
+import axios from "axios";
+import { config } from "process";
 
 type ErrorInfo = {
   time: string;
@@ -34,21 +36,25 @@ const UserData: React.FC = () => {
   };
 
   // 2) Handle Plaid success
-  // const handleOnSuccess: PlaidLinkOnSuccess = async (public_token) => {
-  //   try {
-  //     const exchangeRes = await apiClient.post("/api/exchange_public_token", {
-  //       public_token,
-  //     });
-  //     const { access_token } = exchangeRes.data;
+  const handleOnSuccess: PlaidLinkOnSuccess = async (public_token) => {
+    debugger;
+    try {
+      const exchangeRes = await apiClient.post("/api/exchange_public_token", {
+        public_token,
+      });
+      const { access_token } = exchangeRes.data;
 
-  //     const userDataRes = await apiClient.post("/api/get_user_data", {
-  //       access_token,
-  //     });
-  //     setUserData(userDataRes.data);
-  //   } catch (err) {
-  //     recordError(err, "handleOnSuccess");
-  //   }
-  // };
+      const userDataRes = await apiClient.post("/api/get_user_data", {
+        access_token,
+        start_date: "2023-01-01",
+        end_date: "2024-12-31",
+      });
+      console.log(userData, "this is user data");
+      setUserData(userDataRes.data);
+    } catch (err) {
+      recordError(err, "handleOnSuccess");
+    }
+  };
 
   // 3) Handle Plaid UI errors
   const handleOnError: PlaidLinkOnError = (err: any) => {
@@ -62,8 +68,8 @@ const UserData: React.FC = () => {
   const { open, ready } = usePlaidLink({
     token: linkToken!,
     onSuccess: (public_token, metadata) => {
-      console.log(public_token);
-      console.log(metadata);
+      handleOnSuccess(public_token, metadata);
+      // console.log(metadata);
     },
     onExit: handleOnError,
   });
@@ -94,13 +100,13 @@ const UserData: React.FC = () => {
           </ul>
 
           <h3>Account Balances</h3>
-          <ul>
+          {/* <ul>
             {userData.accounts.map((acct, i) => (
               <li key={i}>
                 {acct.name} — Available: ${acct.balance.available.toFixed(2)}
               </li>
             ))}
-          </ul>
+          </ul> */}
         </div>
       )}
     </div>

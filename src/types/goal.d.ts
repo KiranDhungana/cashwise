@@ -6,6 +6,6 @@ export interface Goal {
   amountSaved: number;
   goalAmount: number;
   daysLeft: number;
-  frequencyLabel: string; // e.g. "$84 monthly", or "$20 weekly"
+  frequencyLabel?: string; // e.g. "$84 monthly", or "$20 weekly"
   progressColor?: string; // e.g. theme.colors.green[6]
 }

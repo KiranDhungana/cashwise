@@ -1,6 +1,6 @@
 // components/ActiveGoalCard.tsx
 
-import { Card, Progress, Group, Text, Stack, Badge, rem, useMantineTheme } from "@mantine/core";
+import { Card, Progress, Group, Text, Stack, Badge, rem, useMantineTheme, Flex } from "@mantine/core";
 import { Clock } from "tabler-icons-react";
 import { Goal } from "@/types/goal";
 import { IconClock } from "@tabler/icons-react";
@@ -17,7 +17,7 @@ const GoalCard = ({ goal }: ActiveGoalCardProps) => {
       <Stack spacing="xs">
         <Group position="apart" align="flex-start">
           <Stack spacing={0}>
-            <Text weight={600}>{goal.title}</Text>
+            <Text w={600}>{goal.title}</Text>
             {goal.description && (
               <Text size="sm" color="dimmed">
                 {goal.description}
@@ -39,7 +39,7 @@ const GoalCard = ({ goal }: ActiveGoalCardProps) => {
         />
 
         <Group position="apart" spacing="xs" mt="xs">
-          <Text size="sm" weight={500}>
+          <Text size="sm" w={500}>
             ${goal.amountSaved.toLocaleString()} saved
           </Text>
           <Text size="sm" color="dimmed">
@@ -55,7 +55,7 @@ const GoalCard = ({ goal }: ActiveGoalCardProps) => {
         </Group>
 
         <Text size="xs" color="dimmed" align="right">
-          {goal.frequencyLabel}
+          Monthly Target : {goal.frequencyLabel}
         </Text>
       </Stack>
     </Card>

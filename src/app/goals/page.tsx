@@ -6,39 +6,21 @@ import { Input } from "@/components/shared/Input";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import apiClient from "@/services/apiClient";
 import { showToast } from "@/utils/toster";
 import { useRouter } from "next/navigation";
-const mockGoals: Goal[] = [
-  {
-    id: "1",
-    title: "Test",
-    description: "new goal",
-    amountSaved: 0,
-    goalAmount: 500,
-    daysLeft: 180,
-    frequencyLabel: "$84 monthly",
-  },
-  {
-    id: "2",
-    title: "New Bike",
-    amountSaved: 0,
-    goalAmount: 100,
-    daysLeft: 166,
-    frequencyLabel: "$17 monthly",
-  },
-  {
-    id: "3",
-    title: "Christmas Gift Fund",
-    description: "Saving for Christmas gifts",
-    amountSaved: 160,
-    goalAmount: 200,
-    daysLeft: -133,
-    frequencyLabel: "$20 weekly",
-    progressColor: "#6f42c1",
-  },
-];
+
+type Goal = {
+  id: string;
+  title: string;
+  description?: string;
+  amountSaved: number;
+  goalAmount: number;
+  daysLeft: number;
+  frequencyLabel?: string;
+  progressColor?: string;
+};
 
 type GoalValue = {
   title: string;
@@ -51,11 +33,12 @@ type GoalValue = {
 const goalSchema = Yup.object({
   title: Yup.string().required("Title is required"),
   description: Yup.string().required("Description is required"),
-  amount: Yup.string().required("Password is required"),
+  amount: Yup.string().required("Amount is required"),
   frequency: Yup.number().required("Frequency is required"),
   targetdate: Yup.string().required("Date is required"),
 }).required();
-const Modalcontent = () => {
+
+const Modalcontent = ({ refreshGoals }: { refreshGoals: () => void }) => {
   const [formError, setFormError] = useState<string | null>(null);
   const router = useRouter();
 
@@ -65,34 +48,73 @@ const Modalcontent = () => {
     formState: { isSubmitting },
   } = useForm<GoalValue>({
     resolver: yupResolver(goalSchema),
-    defaultValues: { title: "", description: "", amount: "", frequency: 0, targetdate: "" },
+    defaultValues: {
+      title: "",
+      description: "",
+      amount: "",
+      frequency: 0,
+      targetdate: "",
+    },
   });
+
   const onSubmit: SubmitHandler<GoalValue> = async (formData) => {
     setFormError(null);
     try {
-      console.log(formData);
+      const payload = {
+        title: formData.title,
+        description: formData.description,
+        amount: parseFloat(formData.amount),
+        frequency: formData.frequency,
+        targetdate: formData.targetdate,
+        amountSaved: 0,
+      };
+
+      await apiClient.post("/api/auth/users/add/goals", payload);
+      showToast({ message: "Goal created" });
+      refreshGoals(); // Refresh goals after creation
     } catch (err: any) {
-      const message = err.response?.data?.message || err.message || "Failed to login";
+      const message = err.response?.data?.error || err.message || "Failed to create goal";
       setFormError(message);
+      showToast({ message });
     }
   };
+
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Input name="title" label="Title" control={control}></Input>
-        <Input name="description" label="Description" control={control}></Input>
-        <Input name="amount" label="Amount" control={control}></Input>
-        <Input name="frequency" label="Monthly Target" control={control}></Input>
-        <Input name="targetdate" label="Target Date" type="date" control={control}></Input>
-        <Button type="submit" fullWidth loading={isSubmitting}>
-          Add Goal
-        </Button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Input name="title" label="Title" control={control} />
+      <Input name="description" label="Description" control={control} />
+      <Input name="amount" label="Amount" control={control} />
+      <Input name="frequency" label="Monthly Target" control={control} />
+      <Input name="targetdate" label="Target Date" type="date" control={control} />
+      <Button type="submit" fullWidth loading={isSubmitting}>
+        Add Goal
+      </Button>
+    </form>
   );
 };
 
 const Goal = () => {
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchGoals = async () => {
+    try {
+      setLoading(true);
+      const res = await apiClient.get("/api/auth/user/goals");
+      setGoals(res.data);
+      setError(null);
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Failed to fetch goals");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchGoals();
+  }, []);
+
   return (
     <Container my="lg">
       <Title order={2} mb="md">
@@ -102,19 +124,27 @@ const Goal = () => {
       <Group mb="lg">
         <Modalcomponent
           title={"Add new goal"}
-          label={"+New Goal "}
-          childern={<Modalcontent></Modalcontent>}
-        ></Modalcomponent>
+          label={"+ New Goal"}
+          childern={<Modalcontent refreshGoals={fetchGoals} />}
+        />
         <Button variant="outline" radius="md">
           Ask AI
         </Button>
       </Group>
 
-      <SimpleGrid cols={1} spacing="md">
-        {mockGoals.map((goal) => (
-          <Goalcard key={goal.id} goal={goal} />
-        ))}
-      </SimpleGrid>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p style={{ color: "red" }}>{error}</p>
+      ) : goals.length === 0 ? (
+        <p>No goals found.</p>
+      ) : (
+        <SimpleGrid cols={1} spacing="md">
+          {goals.map((goal) => (
+            <Goalcard key={goal.id} goal={goal} />
+          ))}
+        </SimpleGrid>
+      )}
     </Container>
   );
 };

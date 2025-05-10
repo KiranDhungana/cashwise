@@ -1,25 +1,28 @@
+"use client";
+
 import { useDisclosure } from "@mantine/hooks";
 import { Modal, Button } from "@mantine/core";
-import { ReactElement } from "react";
-import { title } from "process";
+import React, { ReactElement, cloneElement } from "react";
+
 type ModalcomponentProps = {
-  label?: String;
-  childern: ReactElement;
-  title: String;
+  label: string;
+  title: string;
+
+  childern: ReactElement<{ onClose?: () => void }>;
 };
-const Modalcomponent = ({ label, childern, title }: ModalcomponentProps) => {
+
+export default function Modalcomponent({ label, title, childern }: ModalcomponentProps) {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title={title}>
-        {childern}
-      </Modal>
       <Button variant="default" onClick={open}>
         {label}
       </Button>
+
+      <Modal opened={opened} onClose={close} title={title} centered>
+        {cloneElement(childern, { onClose: close })}
+      </Modal>
     </>
   );
-};
-
-export default Modalcomponent;
+}
